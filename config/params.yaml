@@ -1,0 +1,7 @@
+data_ingestion:
+  train_set_size: 0.7
+  test_set_size: 0.2
+  val_set_size: 0.1
+  
+model_trainer:
+  epochs : 1
