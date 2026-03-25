@@ -16,5 +16,5 @@ logging.basicConfig(
     ]
 
 )
-
+logging.getLogger("pymongo").setLevel(logging.WARNING)
 logging=logging.getLogger("Mlops Logger")

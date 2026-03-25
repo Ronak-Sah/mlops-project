@@ -29,7 +29,7 @@ class DataIngestion():
             
             shuffled_indices=np.random.permutation(len(df))
 
-            create_directories([self.config.train_data_path,self.config.train_data_path,self.config.val_data_path])
+            create_directories([self.config.train_data_path,self.config.test_data_path,self.config.val_data_path])
 
             test_size=int(len(df)*self.config.test_set_size)
             val_size=int(len(df)*self.config.val_set_size)
