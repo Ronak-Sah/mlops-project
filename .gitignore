@@ -212,7 +212,7 @@ __marimo__/
 artifacts/*
 reasearch
 artifacts/
-mlruns
+mlruns/*
 logs/
 *.pt
 *.bin

@@ -1,17 +1,17 @@
 from src.entity.config_entity import DataIngestionConfig
-
+from src.entity.artifact_entity import DataValidationConfig
 from src.constants import *
 from src.utils.common import read_yaml,create_directories
 from src.exception import CustomException
 import sys
 
 class ConfigurationManager:
-    def __init__(self,config_filepath= CONFIG_FILE_PATH,params_filepath= PARAMS_FILE_PATH):
+    def __init__(self,config_filepath= CONFIG_FILE_PATH,params_filepath= PARAMS_FILE_PATH,schema_filepath=SCHEMA_FILE_PATH):
 
         try:
             self.config=read_yaml(config_filepath)
             self.params=read_yaml(params_filepath)
-
+            self.schema=read_yaml(schema_filepath)
             create_directories([self.config.artifacts_root])
         except Exception as e:
             raise CustomException(e,sys)
@@ -35,5 +35,25 @@ class ConfigurationManager:
 
             return data_ingestion_config
 
+        except Exception as e:
+            raise CustomException(e,sys)
+        
+
+
+    def get_data_validation(self) -> DataValidationConfig:
+        try:
+            config=self.config.data_validation
+            schema=self.schema.data_validation
+            create_directories([config.root_dir]) 
+            data_validation_config=DataValidationConfig(
+                root_dir=config.root_dir,
+                train_data_path=config.train_data_path,
+                test_data_path=config.test_data_path,
+                val_data_path=config.val_data_path,
+                all_schema=schema.columns,
+                status_file_path=config.status_file_path
+            )
+
+            return data_validation_config
         except Exception as e:
             raise CustomException(e,sys)

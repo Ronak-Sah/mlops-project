@@ -5,3 +5,10 @@ data_ingestion:
   train_data_path: artifacts/data_ingestion/train
   test_data_path: artifacts/data_ingestion/test
   val_data_path: artifacts/data_ingestion/val
+
+data_validation:
+  root_dir: artifacts/data_validation
+  train_data_path: artifacts/data_ingestion/train/train.csv
+  test_data_path: artifacts/data_ingestion/test/test.csv
+  val_data_path: artifacts/data_ingestion/val/val.csv
+  status_file_path: artifacts/data_validation/status.json
