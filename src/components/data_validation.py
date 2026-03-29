@@ -1,4 +1,4 @@
-from src.entity.artifact_entity import DataValidationConfig
+from src.entity.config_entity import DataValidationConfig
 from src.exception import CustomException
 from src.logger import logging
 from datetime import datetime

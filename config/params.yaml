@@ -3,5 +3,7 @@ data_ingestion:
   test_set_size: 0.2
   val_set_size: 0.1
   
+data_transformation:
+  scaler: "StandardScaler"
 model_trainer:
   epochs : 1

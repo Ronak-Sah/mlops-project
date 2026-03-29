@@ -1,5 +1,5 @@
-from src.entity.config_entity import DataIngestionConfig
-from src.entity.artifact_entity import DataValidationConfig
+from src.entity.config_entity import DataIngestionConfig,DataValidationConfig,DataTransformationConfig
+from src.entity.config_entity import ModelTrainerConfig
 from src.constants import *
 from src.utils.common import read_yaml,create_directories
 from src.exception import CustomException
@@ -55,5 +55,40 @@ class ConfigurationManager:
             )
 
             return data_validation_config
+        except Exception as e:
+            raise CustomException(e,sys)
+        
+
+    def get_data_tranformation(self)->DataTransformationConfig:
+        try:
+            config=self.config.data_transformation
+            params=self.params.data_transformation
+            create_directories([config.root_dir])
+
+            data_transformation_config=DataTransformationConfig(
+                root_dir=config.root_dir,
+                train_data_path=config.train_data_path,
+                test_data_path=config.test_data_path,
+                val_data_path=config.val_data_path,
+                scaler=params.scaler 
+            )
+            
+            return data_transformation_config
+        except Exception as e:
+            raise CustomException(e,sys)
+    
+
+
+    def get_model_trainer(self)->ModelTrainerConfig:
+        try:
+            config=self.config
+            params=self.params
+            create_directories([config.root_dir])
+
+            model_trainer_config=ModelTrainerConfig(
+                root_dir=config.root_dir,
+                epochs=params.epochs
+            )
+            return model_trainer_config
         except Exception as e:
             raise CustomException(e,sys)

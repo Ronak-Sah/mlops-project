@@ -1,14 +1,13 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict
-
 
 @dataclass(frozen=True)
-class DataValidationConfig:
-    root_dir:Path
-    train_data_path: Path
-    test_data_path: Path
-    val_data_path: Path
-    status_file_path: Path
-    all_schema: Dict[str, str]
+class DataTransformationArtifact:
+    transformed_train_path: Path
+    transformed_test_path: Path
+    transformed_val_path: Path
+    scaler_file_path:Path
 
+@dataclass(frozen=True)
+class ModelTrainerArtifact:
+    model_path: Path

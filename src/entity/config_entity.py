@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-
-# Configuration for data ingestion
+from typing import Dict 
 
 @dataclass(frozen=True)
 class DataIngestionConfig:
@@ -12,4 +11,23 @@ class DataIngestionConfig:
     train_set_size: float
     test_set_size: float
     val_set_size: float
+
+@dataclass(frozen=True)
+class DataValidationConfig:
+    root_dir:Path
+    train_data_path: Path
+    test_data_path: Path
+    val_data_path: Path
+    status_file_path: Path
+    all_schema: Dict[str, str]
+
+@dataclass(frozen=True)
+class DataTransformationConfig:
+    root_dir:Path
+    train_data_path: Path
+    test_data_path: Path
+    val_data_path: Path
+    scaler: str
+    
+
 

@@ -21,9 +21,8 @@ class DataIngestion():
 
     def load_data(self):
         try:
-            mlflow.set_tracking_uri("file:///D:/Ml Dl/Project/mlops-project/mlruns")
-            mlflow.set_experiment("Data Ingestion")
-            with mlflow.start_run():
+            
+            with mlflow.start_run(nested=True,run_name="Data_Ingestion_Step"):
 
                 logging.info("Exporting data from MongoDB to Dataframe")
                 df=self.mongo_db.fetch_data()
