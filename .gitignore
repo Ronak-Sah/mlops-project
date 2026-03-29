@@ -261,6 +261,7 @@ datasets/
 #  TRAINING OUTPUTS
 # ============================
 artifacts/
+mlruns/
 checkpoints/
 outputs/
 results/
@@ -288,7 +289,7 @@ ENV/
 # ============================
 .DS_Store
 Thumbs.db
-
+mlflow.db/
 # ============================
 #  HUGGINGFACE CACHE
 # ============================
@@ -297,3 +298,8 @@ huggingface/
 
 
 .git/*
+/artifacts
+.dvc/cache
+.dvc/tmp
+.dvc/config.local
+dvc_storage/

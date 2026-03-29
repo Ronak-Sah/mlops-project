@@ -14,17 +14,17 @@ class TrainPipeline:
 
     def start_data_ingestion(self):
         try:
-            mlflow.set_tracking_uri("sqlite:///mlflow.db")
+            # mlflow.set_tracking_uri("sqlite:///mlflow.db")
             # mlflow.set_tracking_uri("http://127.0.0.1:5000")
-            # mlflow.set_tracking_uri("file:///D:\Ml Dl\Project\mlops-project\mlruns")
+            mlflow.set_tracking_uri("file:///D:\Ml Dl\Project\mlops-project\mlruns")
             mlflow.set_experiment("1-Run") 
             print(mlflow.get_experiment_by_name("Default"))
         
             with mlflow.start_run(run_name="Full_Pipeline_Execution") as run:
                 logging.info("Entered the data_ingestion component of TrainPipeline class")
-                data_ingestion_config=self.config.get_data_ingestion()
-                data_ingestion=DataIngestion(data_ingestion_config)
-                data_ingestion.load_data()
+                # data_ingestion_config=self.config.get_data_ingestion()
+                # data_ingestion=DataIngestion(data_ingestion_config)
+                # data_ingestion.load_data()
                 logging.info("Entered the data_validation component of TrainPipeline class")
                 data_validation=DataValidation(self.config.get_data_validation())
                 data_validation.initiate_data_validation()

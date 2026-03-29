@@ -1,0 +1,4 @@
+[core]
+    remote = local_bucket
+['remote "local_bucket"']
+    url = D:\Ml Dl\Project\mlops-project\dvc_storage
