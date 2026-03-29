@@ -5,5 +5,12 @@ data_ingestion:
   
 data_transformation:
   scaler: "StandardScaler"
+
 model_trainer:
-  epochs : 1
+  booster: gbtree
+    # gbtree, gblinear or dart
+  device: cuda
+  learning_rate: 0.3
+  max_depth: 6
+  early_stopping_rounds: 10
+  n_estimators: 1000

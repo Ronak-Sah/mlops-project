@@ -10,4 +10,4 @@ class DataTransformationArtifact:
 
 @dataclass(frozen=True)
 class ModelTrainerArtifact:
-    model_path: Path
+    trained_model_path: Path

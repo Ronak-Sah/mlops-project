@@ -28,6 +28,17 @@ class DataTransformationConfig:
     test_data_path: Path
     val_data_path: Path
     scaler: str
+
+@dataclass(frozen=True)
+class ModelTrainerConfig:
+    root_dir:Path
+    booster: str
+    device: str
+    learning_rate: float
+    max_depth: int
+    early_stopping_rounds: int
+    n_estimators: int
+
     
 
 

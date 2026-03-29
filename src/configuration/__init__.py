@@ -81,13 +81,18 @@ class ConfigurationManager:
 
     def get_model_trainer(self)->ModelTrainerConfig:
         try:
-            config=self.config
-            params=self.params
+            config=self.config.model_trainer
+            params=self.params.model_trainer
             create_directories([config.root_dir])
 
             model_trainer_config=ModelTrainerConfig(
                 root_dir=config.root_dir,
-                epochs=params.epochs
+                booster=params.booster,
+                device=params.device,
+                learning_rate=params.learning_rate,
+                max_depth=params.max_depth,
+                early_stopping_rounds=params.early_stopping_rounds,
+                n_estimators=params.n_estimators
             )
             return model_trainer_config
         except Exception as e:

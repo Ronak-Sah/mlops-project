@@ -38,6 +38,10 @@ class DataTransformation:
                 val_file_path = os.path.join(self.config.root_dir, "val.csv")
                 scaler_file_path = os.path.join(self.config.root_dir,"scaler.pkl")
 
+                train_df.dropna(subset=[train_df.columns[-1]], inplace=True)
+                test_df.dropna(subset=[test_df.columns[-1]], inplace=True)
+                val_df.dropna(subset=[val_df.columns[-1]], inplace=True)
+
                 target_column= train_df.columns[-1]
                 def transform_df(df, fit=False):
                     X=df.drop(columns=[target_column])
