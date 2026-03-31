@@ -2,17 +2,20 @@ from src.entity.config_entity import ModelTrainerConfig
 from src.entity.artifact_entity import DataTransformationArtifact,ModelTrainerArtifact
 from src.logger import logging
 from src.exception import CustomException
+from src.configuration import ConfigurationManager
 import os,sys
 import xgboost as xgb
 from sklearn.metrics import r2_score,root_mean_squared_error,mean_absolute_error
 import pandas as pd
 import mlflow
-import joblib
+import joblib,json
 from pathlib import Path
 import numpy as np
 
 class ModelTrainer:
-    def __init__(self,config:ModelTrainerConfig,artifact:DataTransformationArtifact):
+
+
+    def __init__(self,config:ModelTrainerConfig):
         """
         Input: 
         1. ModelTrainerConfig (Params like learning_rate, n_estimators)
@@ -20,7 +23,6 @@ class ModelTrainer:
         """
         try:
             self.config=config
-            self.artifact=artifact
             
         except Exception as e:
             raise CustomException(e,sys)
@@ -29,8 +31,8 @@ class ModelTrainer:
         try:
             # mlflow.set_tracking_uri("sqlite:///mlflow.db")
             logging.info("Starting Model Training")
-            train_df=pd.read_csv(self.artifact.transformed_train_path)
-            val_df=pd.read_csv(self.artifact.transformed_val_path)
+            train_df=pd.read_csv(self.config.transformed_train_path)
+            val_df=pd.read_csv(self.config.transformed_val_path)
 
             X_train=train_df.iloc[:,:-1]
             y_train=train_df.iloc[:,-1]
@@ -81,10 +83,28 @@ class ModelTrainer:
 
                 model_path = os.path.join(self.config.root_dir,"model.pkl")
                 joblib.dump(model, model_path)
-
+                metric_path=os.path.join(self.config.root_dir,"metrics.json")
+                with open(metric_path,"w") as f:
+                    json.dump(metrics, f, indent=4)
                 return ModelTrainerArtifact(
                     trained_model_path=Path(model_path)
                 )
 
         except Exception as e:
             raise CustomException(e,sys)
+        
+
+if __name__ == "__main__":
+    try:
+        logging.info("Stage: Model Training started")
+        config = ConfigurationManager()
+        model_training_config = config.get_model_trainer()
+        mlflow.set_tracking_uri("sqlite:///mlflow.db")
+        mlflow.set_experiment("Housing_Price_Pipeline")
+        with mlflow.start_run(run_name="Model_Training_Parent"):
+            model_training=ModelTrainer(model_training_config)
+            model_training.initiate_model_trainer()
+        logging.info("Stage: Model Training completed ")
+    except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)  

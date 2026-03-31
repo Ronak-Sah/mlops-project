@@ -2,6 +2,7 @@ from src.data_access.mongo_db_connection import MongoDb
 from src.entity.config_entity import DataIngestionConfig
 from src.logger import logging
 from src.exception import CustomException
+from src.configuration import ConfigurationManager
 from src.utils.common import create_directories
 import pandas as  pd
 import numpy as np
@@ -67,5 +68,25 @@ class DataIngestion():
         except Exception as e:
             logging.error("Failed to execute load_data")
             raise CustomException(e,sys)
+        
+
+
+
+if __name__ == "__main__":
+    try:
+
+        logging.info("Stage: Data Ingestion started")
+        config_manager = ConfigurationManager()
+        data_ingestion_config = config_manager.get_data_ingestion()
+
+        mlflow.set_tracking_uri("sqlite:///mlflow.db")
+        mlflow.set_experiment("Housing_Price_Pipeline")
+        with mlflow.start_run(run_name="Data_Ingestion_Parent"):
+            data_ingestion = DataIngestion(data_ingestion_config)
+            data_ingestion.load_data()
+        logging.info("Stage: Data Ingestion completed")
+    except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)
 
 

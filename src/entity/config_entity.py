@@ -38,7 +38,9 @@ class ModelTrainerConfig:
     max_depth: int
     early_stopping_rounds: int
     n_estimators: int
-
+    transformed_train_path: Path
+    transformed_test_path: Path
+    transformed_val_path: Path
     
 
 

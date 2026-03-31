@@ -1,5 +1,6 @@
 from src.entity.config_entity import DataValidationConfig
 from src.exception import CustomException
+from src.configuration import ConfigurationManager
 from src.logger import logging
 from datetime import datetime
 import pandas as pd
@@ -75,3 +76,15 @@ class DataValidation:
 
         except Exception as e:
             raise CustomException(e, sys)
+        
+if __name__ == "__main__":
+    try:
+        logging.info("Stage: Data Validation started")
+        config = ConfigurationManager()
+        data_validation_config = config.get_data_validation()
+        data_validation= DataValidation(data_validation_config)
+        data_validation.initiate_data_validation()
+        logging.info("Stage: Data Validation completed ")
+    except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)

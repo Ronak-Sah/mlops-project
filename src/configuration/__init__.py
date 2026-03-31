@@ -59,7 +59,7 @@ class ConfigurationManager:
             raise CustomException(e,sys)
         
 
-    def get_data_tranformation(self)->DataTransformationConfig:
+    def get_data_transformation(self)->DataTransformationConfig:
         try:
             config=self.config.data_transformation
             params=self.params.data_transformation
@@ -92,7 +92,10 @@ class ConfigurationManager:
                 learning_rate=params.learning_rate,
                 max_depth=params.max_depth,
                 early_stopping_rounds=params.early_stopping_rounds,
-                n_estimators=params.n_estimators
+                n_estimators=params.n_estimators,
+                transformed_train_path=config.transformed_train_path,
+                transformed_test_path=config.transformed_test_path,
+                transformed_val_path=config.transformed_val_path
             )
             return model_trainer_config
         except Exception as e:

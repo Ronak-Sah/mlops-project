@@ -4,6 +4,7 @@ from src.entity.artifact_entity import DataTransformationArtifact
 from sklearn.preprocessing import StandardScaler,MinMaxScaler,MaxAbsScaler,Normalizer
 import os,sys
 import joblib
+from src.configuration import ConfigurationManager
 from src.exception import CustomException
 from src.logger import logging
 from pathlib import Path
@@ -80,3 +81,17 @@ class DataTransformation:
             raise CustomException(e,sys)     
 
 
+if __name__ == "__main__":
+    try:
+        logging.info("Stage: Data Transformation started")
+        config = ConfigurationManager()
+        data_tranformation_config = config.get_data_transformation()
+        mlflow.set_tracking_uri("sqlite:///mlflow.db")
+        mlflow.set_experiment("Housing_Price_Pipeline")
+        with mlflow.start_run(run_name="Data_transformation_Parent"):
+            data_tranformation= DataTransformation(data_tranformation_config)
+            data_tranformation.initiate_data_transformation()
+        logging.info("Stage: Data Transformation completed ")
+    except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)
