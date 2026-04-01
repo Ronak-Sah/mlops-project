@@ -9,6 +9,7 @@ import numpy as np
 import os
 import sys
 import mlflow
+from pathlib import Path
 
 class DataIngestion():
     def __init__(self,config:DataIngestionConfig):
@@ -23,48 +24,48 @@ class DataIngestion():
     def load_data(self):
         try:
             
-            with mlflow.start_run(nested=True,run_name="Data_Ingestion_Step"):
+            # with mlflow.start_run(nested=True,run_name="Data_Ingestion_Step"):
 
-                logging.info("Exporting data from MongoDB to Dataframe")
-                df=self.mongo_db.fetch_data()
+            logging.info("Exporting data from MongoDB to Dataframe")
+            df=self.mongo_db.fetch_data()
 
-                if df.empty:
-                    logging.warning("Fetched DataFrame is empty. Check MongoDB collection.")
-                    return
+            if df.empty:
+                logging.warning("Fetched DataFrame is empty. Check MongoDB collection.")
+                return
                 
-                shuffled_indices=np.random.permutation(len(df))
+            shuffled_indices=np.random.permutation(len(df))
 
-                create_directories([self.config.train_data_path,self.config.test_data_path,self.config.val_data_path])
+            create_directories([self.config.train_data_path,self.config.test_data_path,self.config.val_data_path])
 
-                test_size=int(len(df)*self.config.test_set_size)
-                val_size=int(len(df)*self.config.val_set_size)
+            test_size=int(len(df)*self.config.test_set_size)
+            val_size=int(len(df)*self.config.val_set_size)
 
-                mlflow.log_param("train_split_ratio",self.config.train_set_size)
-                mlflow.log_param("test_split_ratio",self.config.test_set_size)
-                mlflow.log_param("val_split_ratio",self.config.val_set_size)
+            mlflow.log_param("train_split_ratio",self.config.train_set_size)
+            mlflow.log_param("test_split_ratio",self.config.test_set_size)
+            mlflow.log_param("val_split_ratio",self.config.val_set_size)
 
-                test_indices=shuffled_indices[:test_size]
-                val_indices=shuffled_indices[test_size:val_size+test_size]
-                train_indices=shuffled_indices[val_size+test_size:]
+            test_indices=shuffled_indices[:test_size]
+            val_indices=shuffled_indices[test_size:val_size+test_size]
+            train_indices=shuffled_indices[val_size+test_size:]
 
-                train_data=df.iloc[train_indices]
-                test_data=df.iloc[test_indices]
-                val_data=df.iloc[val_indices]
+            train_data=df.iloc[train_indices]
+            test_data=df.iloc[test_indices]
+            val_data=df.iloc[val_indices]
 
-                train_file = os.path.join(self.config.train_data_path, "train.csv")
-                test_file = os.path.join(self.config.test_data_path, "test.csv")
-                val_file = os.path.join(self.config.val_data_path, "val.csv")
+            train_file = os.path.join(self.config.train_data_path, "train.csv")
+            test_file = os.path.join(self.config.test_data_path, "test.csv")
+            val_file = os.path.join(self.config.val_data_path, "val.csv")
 
-                train_data.to_csv(train_file,index=False)
-                test_data.to_csv(test_file,index=False)
-                val_data.to_csv(val_file,index=False)
+            train_data.to_csv(train_file,index=False)
+            test_data.to_csv(test_file,index=False)
+            val_data.to_csv(val_file,index=False)
 
-                mlflow.log_artifact(train_file, artifact_path="ingested_train_data")
-                mlflow.log_artifact(test_file,artifact_path="ingested_test_path")
+            mlflow.log_artifact(train_file, artifact_path="ingested_train_data")
+            mlflow.log_artifact(test_file,artifact_path="ingested_test_path")
 
-                logging.info(f"Training data saved at folder - {self.config.train_data_path}")
-                logging.info(f"Testing data saved at folder - {self.config.test_data_path}")
-                logging.info(f"Validation data saved at folder - {self.config.val_data_path}")
+            logging.info(f"Training data saved at folder - {self.config.train_data_path}")
+            logging.info(f"Testing data saved at folder - {self.config.test_data_path}")
+            logging.info(f"Validation data saved at folder - {self.config.val_data_path}")
         except Exception as e:
             logging.error("Failed to execute load_data")
             raise CustomException(e,sys)
@@ -79,11 +80,20 @@ if __name__ == "__main__":
         config_manager = ConfigurationManager()
         data_ingestion_config = config_manager.get_data_ingestion()
 
-        mlflow.set_tracking_uri("sqlite:///mlflow.db")
-        mlflow.set_experiment("Housing_Price_Pipeline")
-        with mlflow.start_run(run_name="Data_Ingestion_Parent"):
-            data_ingestion = DataIngestion(data_ingestion_config)
-            data_ingestion.load_data()
+        mlflow.set_tracking_uri("mlruns")
+        # mlflow.set_tracking_uri("sqlite:///mlflow.db")
+        mlflow.set_experiment("House_prediction_pipeline")
+        with mlflow.start_run(run_name="Full_Pipeline_Parent") as parent_run:
+            with mlflow.start_run(run_name="Data_Ingestion_Step", nested=True):
+                mlflow_path=Path("artifacts/runs")
+                mlflow_uri=Path("artifacts/runs").resolve().as_uri()
+                run_id = parent_run.info.run_id
+
+                os.makedirs(mlflow_path,exist_ok=True)
+                with open(os.path.join(mlflow_path,"parent_run_id.txt"),"w") as f:
+                    f.write(run_id)
+                data_ingestion = DataIngestion(data_ingestion_config)
+                data_ingestion.load_data()
         logging.info("Stage: Data Ingestion completed")
     except Exception as e:
         logging.exception(e)

@@ -42,53 +42,53 @@ class ModelTrainer:
             logging.info(f"Checking for Inf in Target: {np.isinf(y_train).sum()}")
             logging.info(f"Target Max Value: {y_train.max()}, Min Value: {y_train.min()}")
 
-            with mlflow.start_run(nested=True, run_name="Model_Training_Step"):
-                logging.info(f"Training XGBoost model with booster: {self.config.booster}")
-                model=xgb.XGBRegressor(
-                    booster=self.config.booster,
-                    device=self.config.device,
-                    learning_rate=self.config.learning_rate,
-                    max_depth=self.config.max_depth,
-                    early_stopping_rounds=self.config.early_stopping_rounds,
-                    n_estimators=self.config.n_estimators
-                )
-                mlflow.log_params({"booster":self.config.booster,
-                    "learning_rate":self.config.learning_rate,
-                    "max_depth":self.config.max_depth,
-                    "n_estimators":self.config.n_estimators,
-                    "early_stopping_rounds":self.config.early_stopping_rounds
-                })
-                model.fit(
-                    X_train,y_train,
-                    eval_set=[(X_val,y_val)]
-                )
 
-                y_train_pred = model.predict(X_train)
-                y_val_pred = model.predict(X_val) 
-                metrics = {
-                    "train_mae": mean_absolute_error(y_train, y_train_pred),
-                    "train_rmse": root_mean_squared_error(y_train, y_train_pred),
-                    "train_r2": r2_score(y_train, y_train_pred),
-                    "val_mae": mean_absolute_error(y_val, y_val_pred),
-                    "val_rmse": root_mean_squared_error(y_val, y_val_pred),
-                    "val_r2": r2_score(y_val, y_val_pred)
-                }
+            logging.info(f"Training XGBoost model with booster: {self.config.booster}")
+            model=xgb.XGBRegressor(
+                booster=self.config.booster,
+                device=self.config.device,
+                learning_rate=self.config.learning_rate,
+                max_depth=self.config.max_depth,
+                early_stopping_rounds=self.config.early_stopping_rounds,
+                n_estimators=self.config.n_estimators
+            )
+            mlflow.log_params({"booster":self.config.booster,
+                "learning_rate":self.config.learning_rate,
+                "max_depth":self.config.max_depth,
+                "n_estimators":self.config.n_estimators,
+                "early_stopping_rounds":self.config.early_stopping_rounds
+            })
+            model.fit(
+                X_train,y_train,
+                eval_set=[(X_val,y_val)]
+            )
 
-                mlflow.log_metrics(metrics)
-                logging.info(f"Model Training Metrics: {metrics}")
+            y_train_pred = model.predict(X_train)
+            y_val_pred = model.predict(X_val) 
+            metrics = {
+                "train_mae": mean_absolute_error(y_train, y_train_pred),
+                "train_rmse": root_mean_squared_error(y_train, y_train_pred),
+                "train_r2": r2_score(y_train, y_train_pred),
+                "val_mae": mean_absolute_error(y_val, y_val_pred),
+                "val_rmse": root_mean_squared_error(y_val, y_val_pred),
+                "val_r2": r2_score(y_val, y_val_pred)
+            }
 
-                mlflow.log_metrics(metrics)
-                mlflow.xgboost.log_model(model,name="model")
+            mlflow.log_metrics(metrics)
+            logging.info(f"Model Training Metrics: {metrics}")
+
+            mlflow.log_metrics(metrics)
+            mlflow.xgboost.log_model(model,name="model")
 
 
-                model_path = os.path.join(self.config.root_dir,"model.pkl")
-                joblib.dump(model, model_path)
-                metric_path=os.path.join(self.config.root_dir,"metrics.json")
-                with open(metric_path,"w") as f:
-                    json.dump(metrics, f, indent=4)
-                return ModelTrainerArtifact(
-                    trained_model_path=Path(model_path)
-                )
+            model_path = os.path.join(self.config.root_dir,"model.pkl")
+            joblib.dump(model, model_path)
+            metric_path=os.path.join(self.config.root_dir,"metrics.json")
+            with open(metric_path,"w") as f:
+                json.dump(metrics,f,indent=4)
+            return ModelTrainerArtifact(
+                trained_model_path=Path(model_path)
+            )
 
         except Exception as e:
             raise CustomException(e,sys)
@@ -99,11 +99,16 @@ if __name__ == "__main__":
         logging.info("Stage: Model Training started")
         config = ConfigurationManager()
         model_training_config = config.get_model_trainer()
-        mlflow.set_tracking_uri("sqlite:///mlflow.db")
-        mlflow.set_experiment("Housing_Price_Pipeline")
-        with mlflow.start_run(run_name="Model_Training_Parent"):
-            model_training=ModelTrainer(model_training_config)
-            model_training.initiate_model_trainer()
+        mlflow.set_tracking_uri("mlruns")
+        mlflow_path=Path("artifacts/runs")
+        mlflow_uri=Path("artifacts/mlflow")
+        with open(os.path.join(mlflow_path,"parent_run_id.txt"),"r") as f:
+            parent_id=f.read().strip()
+        mlflow.set_experiment("House_prediction_pipeline")
+        with mlflow.start_run(run_id=parent_id):
+            with mlflow.start_run(run_name="Model_Training_Step", nested=True):
+                model_training=ModelTrainer(model_training_config)
+                model_training.initiate_model_trainer()
         logging.info("Stage: Model Training completed ")
     except Exception as e:
         logging.exception(e)

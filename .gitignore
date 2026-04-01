@@ -282,7 +282,7 @@ ENV/
 # ============================
 #  JUPYTER / NOTEBOOK
 # ============================
-.ipynb_checkpoints/
+.ipynb
 
 # ============================
 #  OS SYSTEM FILES
@@ -302,4 +302,4 @@ huggingface/
 .dvc/tmp
 .dvc/config.local
 dvc_storage/
-notebooks/*
+notebooks
