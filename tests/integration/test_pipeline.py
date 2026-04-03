@@ -44,4 +44,4 @@ class TestPipeline:
             pytest.fail(f"Pipeline Stage 04 (Training) failed: {e}")
         
         assert os.path.exists(trainer.trained_model_path)
-        assert os.path.exists(trainer.metrics_path)
+        assert os.path.exists(trainer.metric_path)

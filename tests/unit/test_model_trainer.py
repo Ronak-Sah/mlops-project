@@ -19,7 +19,7 @@ class TestModelTrainer:
         trainer=setup_trainer.initiate_model_trainer()
 
         assert os.path.exists(trainer.trained_model_path)
-        assert os.path.exists(trainer.metrics_path)
+        assert os.path.exists(trainer.metric_path)
 
 
     
