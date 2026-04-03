@@ -32,7 +32,7 @@ class DataIngestion():
 
             if df.empty:
                 logging.warning("Fetched DataFrame is empty. Check MongoDB collection.")
-                return
+                return None
                 
             shuffled_indices=np.random.permutation(len(df))
 
