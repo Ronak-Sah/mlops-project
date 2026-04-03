@@ -87,7 +87,7 @@ class ModelTrainer:
             with open(metric_path,"w") as f:
                 json.dump(metrics,f,indent=4)
             return ModelTrainerArtifact(
-                trained_model_path=Path(model_path),
+                trained_model_path=model_path,
                 metric_path=metric_path
             )
 
