@@ -2,10 +2,12 @@ import pytest
 from src.components.data_validation import DataValidation
 import os
 import pandas as pd
+from src.configuration import ConfigurationManager
 class TestDataValidation:
     @pytest.fixture
     def setup_validation(self):
-        return DataValidation()
+        self.config=ConfigurationManager()
+        return DataValidation(self.config.get_data_validation)
     
 
     def test_init_validation(self,setup_validation):

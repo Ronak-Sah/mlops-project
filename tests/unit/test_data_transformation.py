@@ -1,11 +1,13 @@
 import pytest
 from src.components.data_transformation import DataTransformation
 import os
+from src.configuration import ConfigurationManager
 import pandas as pd
 class TestDataTransformation:
     @pytest.fixture
     def setup_transformation(self):
-        return DataTransformation()
+        self.config=ConfigurationManager()
+        return DataTransformation(self.config.get_data_transformation())
     
 
     def test_init_transformation(self,setup_transformation):

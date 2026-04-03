@@ -1,11 +1,13 @@
 import pytest
 from src.components.model_trainer import ModelTrainer
 import os
+from src.configuration import ConfigurationManager
 import pandas as pd
 class TestModelTrainer:
     @pytest.fixture
     def setup_trainer(self):
-        return ModelTrainer()
+        self.config=ConfigurationManager()
+        return ModelTrainer(self.config.get_model_trainer())
     
 
     def test_init_trainer(self,setup_trainer):

@@ -1,11 +1,13 @@
 import pytest
 from src.components.data_ingestion import DataIngestion
 import os
+from src.configuration import ConfigurationManager
 import pandas as pd
 class TestDataIngestion:
     @pytest.fixture
     def setup_ingstion(self):
-        return DataIngestion()
+        self.config=ConfigurationManager()
+        return DataIngestion(self.config.get_data_ingestion)
     
 
     def test_init_ingestion(self,setup_ingstion):
