@@ -7,9 +7,13 @@ on:
     branches: [ main ]
 
 jobs:
-  build-linux:
+  build:
     runs-on: ubuntu-latest
-
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -20,6 +24,8 @@ jobs:
         python-version: '3.10'
 
     - name: Install dependencies
+      env:
+            mongo_db_url: ${{ secrets.MONGO_DB_URL }} 
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt

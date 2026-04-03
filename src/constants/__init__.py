@@ -5,6 +5,8 @@ import os
 load_dotenv()
 
 MONGO_DB_URL=os.getenv("mongo_db_url")
+if MONGO_DB_URL is None:
+    print("Warning: MONGO_DB_URL not found in environment variables!")
 DB_NAME='House_Price'
 COLLECTION_NAME='House_Price_Prediction'
 
