@@ -10,6 +10,7 @@ import os
 import sys
 import mlflow
 from pathlib import Path
+from src.entity.artifact_entity import DataIngestionArtifact
 
 class DataIngestion():
     def __init__(self,config:DataIngestionConfig):
@@ -66,6 +67,12 @@ class DataIngestion():
             logging.info(f"Training data saved at folder - {self.config.train_data_path}")
             logging.info(f"Testing data saved at folder - {self.config.test_data_path}")
             logging.info(f"Validation data saved at folder - {self.config.val_data_path}")
+
+            return DataIngestionArtifact(
+                train_data_path=train_file,
+                test_data_path=test_file,
+                val_data_path=val_file
+            )
         except Exception as e:
             logging.error("Failed to execute load_data")
             raise CustomException(e,sys)
