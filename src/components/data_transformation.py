@@ -71,10 +71,10 @@ class DataTransformation:
             joblib.dump(self.scaler,scaler_file_path)
 
             return DataTransformationArtifact(
-                transformed_train_path=Path(train_file_path),
-                transformed_test_path=Path(test_file_path),
-                transformed_val_path=Path(val_file_path),
-                scaler_file_path=Path(scaler_file_path)
+                transformed_train_path=train_file_path,
+                transformed_test_path=test_file_path,
+                transformed_val_path=val_file_path,
+                scaler_file_path=scaler_file_path
             )
         except Exception as e:
             raise CustomException(e,sys)     
