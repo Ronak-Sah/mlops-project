@@ -16,8 +16,8 @@ class TrainPipeline:
             logging.info("Entered the data_ingestion component of TrainPipeline class")
             data_ingestion_config=self.config.get_data_ingestion()
             data_ingestion=DataIngestion(data_ingestion_config)
-            data_ingestion.load_data()
-                    
+            data_ingestion_artifact=data_ingestion.load_data()
+            return data_ingestion_artifact
         except Exception as e:
             raise CustomException(e,sys)
 
@@ -25,7 +25,8 @@ class TrainPipeline:
         try:
             logging.info("Entered the data_validation component of TrainPipeline class")
             data_validation=DataValidation(self.config.get_data_validation())
-            data_validation.initiate_data_validation()
+            validtion=data_validation.initiate_data_validation()
+            return validtion
         except Exception as e:
             raise CustomException(e,sys)
     
@@ -42,6 +43,7 @@ class TrainPipeline:
         try:
             logging.info("Entered the model_trainer component of TrainPipeline class")
             model_trainer=ModelTrainer(self.config.get_model_trainer())
-            model_trainer.initiate_model_trainer()
+            model_trainer_artifact=model_trainer.initiate_model_trainer()
+            return model_trainer_artifact
         except Exception as e:
             raise CustomException(e,sys)
