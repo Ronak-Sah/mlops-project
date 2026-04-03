@@ -25,5 +25,7 @@ class MongoDb():
             logging.info(f"Successfully fetched {len(df)} records from MongoDB.")
             return df
         except Exception as e:
-            logging.error("e")
+            
             raise CustomException(e,sys)
+
+
