@@ -2,7 +2,7 @@ from pathlib import Path
 from dotenv import  load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(override=False)
 
 MONGO_DB_URL=os.getenv("mongo_db_url")
 if MONGO_DB_URL is None:
