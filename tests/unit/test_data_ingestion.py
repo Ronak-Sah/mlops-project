@@ -7,7 +7,7 @@ class TestDataIngestion:
     @pytest.fixture
     def setup_ingstion(self):
         self.config=ConfigurationManager()
-        return DataIngestion(self.config.get_data_ingestion)
+        return DataIngestion(self.config.get_data_ingestion())
     
 
     def test_init_ingestion(self,setup_ingstion):

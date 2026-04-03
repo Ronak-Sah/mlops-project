@@ -7,7 +7,7 @@ class TestDataValidation:
     @pytest.fixture
     def setup_validation(self):
         self.config=ConfigurationManager()
-        return DataValidation(self.config.get_data_validation)
+        return DataValidation(self.config.get_data_validation())
     
 
     def test_init_validation(self,setup_validation):
