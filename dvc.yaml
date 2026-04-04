@@ -46,3 +46,11 @@ stages:
     metrics:
       - artifacts/model_trainer/metrics.json:
           cache: false
+      - artifacts/model_trainer/experiment.json:
+          cache: false
+    
+  model_register:
+    cmd: python -m src.components.model_register
+    deps:
+      - src/components/model_register.py
+      - src/components/model_trainer.py

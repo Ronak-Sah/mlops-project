@@ -3,7 +3,7 @@ from src.entity.artifact_entity import DataTransformationArtifact,ModelTrainerAr
 from src.logger import logging
 from src.exception import CustomException
 from src.configuration import ConfigurationManager
-import os,sys
+import os,sys,dagshub
 import xgboost as xgb
 from sklearn.metrics import r2_score,root_mean_squared_error,mean_absolute_error
 import pandas as pd
@@ -11,6 +11,7 @@ import mlflow
 import joblib,json
 from pathlib import Path
 import numpy as np
+from src.constants import DAGSHUB_URI,MLFLOW_TRACKING_PASSWORD,MLFLOW_TRACKING_USERNAME
 
 class ModelTrainer:
 
@@ -78,7 +79,7 @@ class ModelTrainer:
             logging.info(f"Model Training Metrics: {metrics}")
 
             mlflow.log_metrics(metrics)
-            mlflow.xgboost.log_model(model,name="model")
+            model_info_mlflow=mlflow.xgboost.log_model(model,artifact_path="model")
 
 
             model_path = os.path.join(self.config.root_dir,"model.pkl")
@@ -86,9 +87,18 @@ class ModelTrainer:
             metric_path=os.path.join(self.config.root_dir,"metrics.json")
             with open(metric_path,"w") as f:
                 json.dump(metrics,f,indent=4)
+            experiment_info_path=os.path.join(self.config.root_dir,"experiment.json")
+            experiment_info={
+                "run_id":mlflow.active_run().info.run_id,
+                "model_path":"model",
+                "model_uri":model_info_mlflow.model_uri
+            }
+            with open(experiment_info_path,"w") as f:
+                json.dump(experiment_info,f,indent=4)
             return ModelTrainerArtifact(
                 trained_model_path=model_path,
-                metric_path=metric_path
+                metric_path=metric_path,
+                experiment_info_path=experiment_info_path
             )
 
         except Exception as e:
@@ -100,17 +110,22 @@ if __name__ == "__main__":
         logging.info("Stage: Model Training started")
         config = ConfigurationManager()
         model_training_config = config.get_model_trainer()
-        mlflow.set_tracking_uri("mlruns")
+
+        mlflow.set_tracking_uri(DAGSHUB_URI)
+        dagshub.init(repo_owner='ronaksah75', repo_name='mlops-project', mlflow=True)
+        os.environ['MLFLOW_TRACKING_USERNAME']=MLFLOW_TRACKING_USERNAME
+        os.environ['MLFLOW_TRACKING_PASSWORD']=MLFLOW_TRACKING_PASSWORD
+
         mlflow_path=Path("artifacts/runs")
-        mlflow_uri=Path("artifacts/mlflow")
+
         with open(os.path.join(mlflow_path,"parent_run_id.txt"),"r") as f:
             parent_id=f.read().strip()
-        mlflow.set_experiment("House_prediction_pipeline")
+        mlflow.set_experiment("House_Price_Prediction")
         with mlflow.start_run(run_id=parent_id):
-            with mlflow.start_run(run_name="Model_Training_Step", nested=True):
+            with mlflow.start_run(run_name="Model_Training_Step", nested=True) as child:
                 model_training=ModelTrainer(model_training_config)
                 model_training.initiate_model_trainer()
         logging.info("Stage: Model Training completed ")
     except Exception as e:
-        logging.exception(e)
+        # logging.exception(e)
         raise CustomException(e,sys)  

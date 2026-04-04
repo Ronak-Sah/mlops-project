@@ -14,8 +14,10 @@ class DataTransformationArtifact:
     transformed_test_path: Path
     transformed_val_path: Path
     scaler_file_path: Path
+    experiment_info_path: Path
 
 @dataclass(frozen=True)
 class ModelTrainerArtifact:
     trained_model_path: Path
     metric_path: Path
+    experiment_info_path: Path

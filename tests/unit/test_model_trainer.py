@@ -15,13 +15,14 @@ class TestModelTrainer:
 
         assert trainer.trained_model_path==os.path.join('artifacts','model_trainer','model.pkl')
         assert trainer.metric_path==os.path.join('artifacts','model_trainer','metrics.json')
-        
+        assert trainer.experiment_info_path==os.path.join('artifacts','model_trainer','experiment_info.json')
 
     def test_initiate_model_trainer(self,setup_trainer):
         trainer=setup_trainer.initiate_model_trainer()
 
         assert os.path.exists(trainer.trained_model_path)
         assert os.path.exists(trainer.metric_path)
+        assert os.path.exists(trainer.experiment.info_path)
 
 
     

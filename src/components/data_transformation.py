@@ -3,12 +3,13 @@ from src.entity.config_entity import DataTransformationConfig
 from src.entity.artifact_entity import DataTransformationArtifact
 from sklearn.preprocessing import StandardScaler,MinMaxScaler,MaxAbsScaler,Normalizer
 import os,sys
-import joblib
+import joblib,json
 from src.configuration import ConfigurationManager
 from src.exception import CustomException
 from src.logger import logging
 from pathlib import Path
-import mlflow
+import mlflow,dagshub
+from src.constants import DAGSHUB_URI,MLFLOW_TRACKING_PASSWORD,MLFLOW_TRACKING_USERNAME
 class DataTransformation:
     def  __init__(self,config:DataTransformationConfig):
         try:
@@ -60,7 +61,6 @@ class DataTransformation:
             logging.info(f"Applying {self.config.scaler} transformation")
 
             mlflow.log_param("scaler_type",self.config.scaler)
-            mlflow.sklearn.log_model(self.scaler,name="scaler_model")
             train_transformed = transform_df(train_df, fit=True)
             val_transformed = transform_df(val_df)
             test_transformed = transform_df(test_df)
@@ -70,11 +70,20 @@ class DataTransformation:
             test_transformed.to_csv(test_file_path,index=False)
             joblib.dump(self.scaler,scaler_file_path)
 
+            scaler_model_info_mlflow=mlflow.sklearn.log_model(self.scaler,name="scaler_model")
+
+            experiment_info_path=os.path.join(self.config.root_dir,"experiment.json")
+            experiment_info={
+                "model_uri":scaler_model_info_mlflow.model_uri
+            }
+            with open(experiment_info_path,"w") as f:
+                json.dump(experiment_info,f,indent=4)
             return DataTransformationArtifact(
                 transformed_train_path=train_file_path,
                 transformed_test_path=test_file_path,
                 transformed_val_path=val_file_path,
-                scaler_file_path=scaler_file_path
+                scaler_file_path=scaler_file_path,
+                experiment_info_path=experiment_info_path
             )
         except Exception as e:
             raise CustomException(e,sys)     
@@ -85,16 +94,24 @@ if __name__ == "__main__":
         logging.info("Stage: Data Transformation started")
         config = ConfigurationManager()
         data_tranformation_config = config.get_data_transformation()
-        mlflow.set_tracking_uri("mlruns")
+
+        mlflow.set_tracking_uri(DAGSHUB_URI)
+        dagshub.init(repo_owner='ronaksah75', repo_name='mlops-project', mlflow=True)
+        os.environ['MLFLOW_TRACKING_USERNAME']=MLFLOW_TRACKING_USERNAME
+        os.environ['MLFLOW_TRACKING_PASSWORD']=MLFLOW_TRACKING_PASSWORD
+
         # mlflow.set_tracking_uri("sqlite:///mlflow.db")
         mlflow_path=Path("artifacts/runs")
         with open(os.path.join(mlflow_path,"parent_run_id.txt"),"r") as f:
             parent_id =f.read().strip()
-        mlflow.set_experiment("House_prediction_pipeline")
+
+        mlflow.set_experiment("House_Price_Prediction")
         with mlflow.start_run(run_id=parent_id):
             with mlflow.start_run(run_name="Data_Transformation_Step", nested=True):
+
                 data_tranformation= DataTransformation(data_tranformation_config)
                 data_tranformation.initiate_data_transformation()
+
         logging.info("Stage: Data Transformation completed ")
     except Exception as e:
         logging.exception(e)

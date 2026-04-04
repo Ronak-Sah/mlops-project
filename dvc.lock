@@ -10,12 +10,12 @@ stages:
       nfiles: 3
     - path: src/components/data_ingestion.py
       hash: md5
-      md5: d54d8452a09c633275cefcdd104de608
-      size: 4129
+      md5: f8b39b9500150f20ca6cd779209fc8d0
+      size: 4646
     - path: src/components/data_ingestion.py
       hash: md5
-      md5: d54d8452a09c633275cefcdd104de608
-      size: 4129
+      md5: f8b39b9500150f20ca6cd779209fc8d0
+      size: 4646
     - path: src/configuration
       hash: md5
       md5: 33a3eed4810890c5342b10fd5bed3fb0.dir
@@ -24,36 +24,36 @@ stages:
     outs:
     - path: artifacts/data_ingestion/test
       hash: md5
-      md5: 2e70ca1fbc235631992814750698b3d2.dir
-      size: 20850
+      md5: 44f555a73db69ae03326b238b75aaf99.dir
+      size: 20832
       nfiles: 1
     - path: artifacts/data_ingestion/train
       hash: md5
-      md5: 3e6aba4934dc0df84a2d6060f4e757d3.dir
-      size: 72793
+      md5: 0b58f43ad975aee8b0aa834f6bf3ec78.dir
+      size: 72837
       nfiles: 1
     - path: artifacts/data_ingestion/val
       hash: md5
-      md5: cdf1ad9db71d4e703e4cdbacf86d97d6.dir
-      size: 10540
+      md5: 3c4c4384ea745602619243d156fcc249.dir
+      size: 10514
       nfiles: 1
   data_validation:
     cmd: python -m src.components.data_validation
     deps:
     - path: artifacts/data_ingestion/test
       hash: md5
-      md5: 2e70ca1fbc235631992814750698b3d2.dir
-      size: 20850
+      md5: 44f555a73db69ae03326b238b75aaf99.dir
+      size: 20832
       nfiles: 1
     - path: artifacts/data_ingestion/train
       hash: md5
-      md5: 3e6aba4934dc0df84a2d6060f4e757d3.dir
-      size: 72793
+      md5: 0b58f43ad975aee8b0aa834f6bf3ec78.dir
+      size: 72837
       nfiles: 1
     - path: artifacts/data_ingestion/val
       hash: md5
-      md5: cdf1ad9db71d4e703e4cdbacf86d97d6.dir
-      size: 10540
+      md5: 3c4c4384ea745602619243d156fcc249.dir
+      size: 10514
       nfiles: 1
     - path: config/schema.yaml
       hash: md5
@@ -71,7 +71,7 @@ stages:
     outs:
     - path: artifacts/data_validation
       hash: md5
-      md5: 0c38ec91f1291ea5870b13ebc9dfd11a.dir
+      md5: 4d68e9d32f314bc13cae61ee7603de26.dir
       size: 129
       nfiles: 1
   data_transformation:
@@ -79,23 +79,23 @@ stages:
     deps:
     - path: artifacts/data_ingestion/test
       hash: md5
-      md5: 2e70ca1fbc235631992814750698b3d2.dir
-      size: 20850
+      md5: 44f555a73db69ae03326b238b75aaf99.dir
+      size: 20832
       nfiles: 1
     - path: artifacts/data_ingestion/train
       hash: md5
-      md5: 3e6aba4934dc0df84a2d6060f4e757d3.dir
-      size: 72793
+      md5: 0b58f43ad975aee8b0aa834f6bf3ec78.dir
+      size: 72837
       nfiles: 1
     - path: artifacts/data_ingestion/val
       hash: md5
-      md5: cdf1ad9db71d4e703e4cdbacf86d97d6.dir
-      size: 10540
+      md5: 3c4c4384ea745602619243d156fcc249.dir
+      size: 10514
       nfiles: 1
     - path: src/components/data_transformation.py
       hash: md5
-      md5: 839f880d2c8d2d7cb58a7f7dc8738783
-      size: 4503
+      md5: a109198829639f77e0c9c8075cc9215e
+      size: 5218
     - path: src/configuration
       hash: md5
       md5: 33a3eed4810890c5342b10fd5bed3fb0.dir
@@ -104,32 +104,47 @@ stages:
     outs:
     - path: artifacts/data_transformation
       hash: md5
-      md5: 909d4c1773e11acef4ab871ef9174503.dir
-      size: 344375
-      nfiles: 4
+      md5: 5c212174ea48baf42fc0aa973301dc8d.dir
+      size: 341441
+      nfiles: 5
   model_trainer:
     cmd: python -m src.components.model_trainer
     deps:
     - path: artifacts/data_transformation
       hash: md5
-      md5: 909d4c1773e11acef4ab871ef9174503.dir
-      size: 344375
-      nfiles: 4
+      md5: 5c212174ea48baf42fc0aa973301dc8d.dir
+      size: 341441
+      nfiles: 5
     - path: src/components/model_trainer.py
       hash: md5
-      md5: 825654ee674f88708bb03d9eef8b928f
-      size: 4740
+      md5: 9826f36be87c2832bb760fe0fb5dba8d
+      size: 5563
     - path: src/configuration
       hash: md5
       md5: 33a3eed4810890c5342b10fd5bed3fb0.dir
       size: 7129
       nfiles: 2
     outs:
+    - path: artifacts/model_trainer/experiment.json
+      hash: md5
+      md5: 193cbe291e04728ae841f8b74fe133ad
+      size: 146
     - path: artifacts/model_trainer/metrics.json
       hash: md5
-      md5: 43cf01fed89c9ad32f605868a2cbbb42
-      size: 221
+      md5: 853fcf7b6e5c751552c7b98e4a782ad3
+      size: 222
     - path: artifacts/model_trainer/model.pkl
       hash: md5
-      md5: 920cfdde71cf9a05bebea623f9e4bd5b
-      size: 69769
+      md5: 5099259f6e8ea7292aeae95ddacd7271
+      size: 59339
+  model_register:
+    cmd: python -m src.components.model_register
+    deps:
+    - path: src/components/model_register.py
+      hash: md5
+      md5: 913e1cdb7ea9fc176750c8df3115b170
+      size: 2875
+    - path: src/components/model_trainer.py
+      hash: md5
+      md5: 9826f36be87c2832bb760fe0fb5dba8d
+      size: 5563

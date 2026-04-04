@@ -13,3 +13,7 @@ COLLECTION_NAME='House_Price_Prediction'
 CONFIG_FILE_PATH = Path("config/config.yaml")
 PARAMS_FILE_PATH = Path("config/params.yaml")
 SCHEMA_FILE_PATH = Path("config/schema.yaml")
+
+DAGSHUB_URI=os.getenv("dagshub_uri")
+MLFLOW_TRACKING_USERNAME=os.getenv("mlflow_tracking_username")
+MLFLOW_TRACKING_PASSWORD=os.getenv("mlflow_tracking_password")

@@ -17,7 +17,7 @@ class TestDataTransformation:
         assert transformation.transformed_test_path==os.path.join('artifacts','data_transformation','test.csv')
         assert transformation.transformed_val_path==os.path.join('artifacts','data_transformation','val.csv')
         assert transformation.scaler_file_path==os.path.join('artifacts','data_transformation','scaler.pkl')
-
+        
     def test_initiate_data_ingestion(self,setup_transformation):
         transformation=setup_transformation.initiate_data_transformation()
 

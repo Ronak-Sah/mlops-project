@@ -7,11 +7,11 @@ from src.utils.common import create_directories
 import pandas as  pd
 import numpy as np
 import os
-import sys
+import sys,dagshub
 import mlflow
 from pathlib import Path
 from src.entity.artifact_entity import DataIngestionArtifact
-
+from src.constants import DAGSHUB_URI,MLFLOW_TRACKING_PASSWORD,MLFLOW_TRACKING_USERNAME
 class DataIngestion():
     def __init__(self,config:DataIngestionConfig):
         try:
@@ -87,18 +87,22 @@ if __name__ == "__main__":
         config_manager = ConfigurationManager()
         data_ingestion_config = config_manager.get_data_ingestion()
 
-        mlflow.set_tracking_uri("mlruns")
+        mlflow.set_tracking_uri(DAGSHUB_URI)
+        dagshub.init(repo_owner='ronaksah75', repo_name='mlops-project', mlflow=True)
+        os.environ['MLFLOW_TRACKING_USERNAME']=MLFLOW_TRACKING_USERNAME
+        os.environ['MLFLOW_TRACKING_PASSWORD']=MLFLOW_TRACKING_PASSWORD
+
         # mlflow.set_tracking_uri("sqlite:///mlflow.db")
-        mlflow.set_experiment("House_prediction_pipeline")
+        mlflow.set_experiment("House_Price_Prediction")
         with mlflow.start_run(run_name="Full_Pipeline_Parent") as parent_run:
             with mlflow.start_run(run_name="Data_Ingestion_Step", nested=True):
                 mlflow_path=Path("artifacts/runs")
-                mlflow_uri=Path("artifacts/runs").resolve().as_uri()
                 run_id = parent_run.info.run_id
 
                 os.makedirs(mlflow_path,exist_ok=True)
                 with open(os.path.join(mlflow_path,"parent_run_id.txt"),"w") as f:
                     f.write(run_id)
+
                 data_ingestion = DataIngestion(data_ingestion_config)
                 data_ingestion.load_data()
         logging.info("Stage: Data Ingestion completed")

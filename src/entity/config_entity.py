@@ -41,6 +41,26 @@ class ModelTrainerConfig:
     transformed_train_path: Path
     transformed_test_path: Path
     transformed_val_path: Path
-    
 
 
+
+
+@dataclass(frozen=True)
+class InferenceConfig:
+    bedrooms: float
+    bathrooms: float
+    sqft_living: float
+    sqft_lot: float
+    floors: float
+    waterfront: float
+    view: float
+    condition: float
+    grade: float
+    sqft_above: float
+    sqft_basement: float
+    yr_built: float
+    yr_renovated: float
+    zipcode: float
+    lat: float
+    long: float
+    sqft_living15: float

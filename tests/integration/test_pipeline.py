@@ -45,3 +45,4 @@ class TestPipeline:
         
         assert os.path.exists(trainer.trained_model_path)
         assert os.path.exists(trainer.metric_path)
+        assert os.path.exists(trainer.experiment.info_path)
