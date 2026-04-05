@@ -42,9 +42,9 @@ jobs:
       run: |
         dvc remote modify origin url ${{ secrets.DAGSHUB_S3_BUCKET_URL }}
         dvc remote modify origin endpointurl ${{ secrets.DAGSHUB_S3_ENDPOINT_URL }}
-        dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
-        dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY }}
-        dvc remote modify origin --local region ${{ secrets.DAGSHUB_S3_REGION }}
+        dvc remote modify origin access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+        dvc remote modify origin local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY }}
+        dvc remote modify origin ocal region ${{ secrets.DAGSHUB_S3_REGION }}
         
 
         
