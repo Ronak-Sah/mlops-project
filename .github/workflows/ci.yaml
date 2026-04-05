@@ -45,6 +45,7 @@ jobs:
 
     - name: Run pipeline
       env:
+        mongo_db_url: ${{ secrets.MONGO_DB_URL }}
         dagshub_uri: ${{secrets.DAGSHUB_URI}}
         mlflow_tracking_username: ${{secrets.MLFLOW_TRACKING_USERNAME}}
         mlflow_tracking_password: ${{secrets.MLFLOW_TRACKING_PASSWORD}}
