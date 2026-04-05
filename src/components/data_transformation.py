@@ -9,7 +9,7 @@ from src.exception import CustomException
 from src.logger import logging
 from pathlib import Path
 import mlflow,dagshub
-from src.constants import DAGSHUB_URI,MLFLOW_TRACKING_PASSWORD,MLFLOW_TRACKING_USERNAME
+from src.constants import *
 class DataTransformation:
     def  __init__(self,config:DataTransformationConfig):
         try:
@@ -95,10 +95,10 @@ if __name__ == "__main__":
         config = ConfigurationManager()
         data_tranformation_config = config.get_data_transformation()
 
-        mlflow.set_tracking_uri(DAGSHUB_URI)
-        dagshub.init(repo_owner='ronaksah75', repo_name='mlops-project', mlflow=True)
         os.environ['MLFLOW_TRACKING_USERNAME']=MLFLOW_TRACKING_USERNAME
         os.environ['MLFLOW_TRACKING_PASSWORD']=MLFLOW_TRACKING_PASSWORD
+        mlflow.set_tracking_uri(DAGSHUB_URI)
+        # dagshub.init(repo_owner=REPO_OWNER, repo_name=REPO_NAME, mlflow=True)
 
         # mlflow.set_tracking_uri("sqlite:///mlflow.db")
         mlflow_path=Path("artifacts/runs")

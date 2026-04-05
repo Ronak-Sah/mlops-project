@@ -2,8 +2,7 @@ import os,sys
 from src.logger import logging
 from src.exception import CustomException
 import json,mlflow,dagshub
-from src.constants import DAGSHUB_URI,MLFLOW_TRACKING_PASSWORD,MLFLOW_TRACKING_USERNAME
-
+from src.constants import *
 class ModelRegistery:
     def __init__(self):
         self.info_path=os.path.join("artifacts","model_trainer","experiment.json")
@@ -64,10 +63,10 @@ if __name__ == "__main__":
     try:
         logging.info("Stage: Model registering started")
 
-        mlflow.set_tracking_uri(DAGSHUB_URI)
-        dagshub.init(repo_owner='ronaksah75', repo_name='mlops-project', mlflow=True)
         os.environ['MLFLOW_TRACKING_USERNAME']=MLFLOW_TRACKING_USERNAME
         os.environ['MLFLOW_TRACKING_PASSWORD']=MLFLOW_TRACKING_PASSWORD
+        mlflow.set_tracking_uri(DAGSHUB_URI)
+        # dagshub.init(repo_owner=REPO_OWNER, repo_name=REPO_NAME, mlflow=True)
 
         model_register=ModelRegistery()
         model_register.register_model("house_price")

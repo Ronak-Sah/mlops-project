@@ -11,7 +11,7 @@ import sys,dagshub
 import mlflow
 from pathlib import Path
 from src.entity.artifact_entity import DataIngestionArtifact
-from src.constants import DAGSHUB_URI,MLFLOW_TRACKING_PASSWORD,MLFLOW_TRACKING_USERNAME
+from src.constants import *
 class DataIngestion():
     def __init__(self,config:DataIngestionConfig):
         try:
@@ -87,10 +87,10 @@ if __name__ == "__main__":
         config_manager = ConfigurationManager()
         data_ingestion_config = config_manager.get_data_ingestion()
 
-        mlflow.set_tracking_uri(DAGSHUB_URI)
-        dagshub.init(repo_owner='ronaksah75', repo_name='mlops-project', mlflow=True)
         os.environ['MLFLOW_TRACKING_USERNAME']=MLFLOW_TRACKING_USERNAME
         os.environ['MLFLOW_TRACKING_PASSWORD']=MLFLOW_TRACKING_PASSWORD
+        mlflow.set_tracking_uri(DAGSHUB_URI)
+        # dagshub.init(repo_owner=REPO_OWNER, repo_name=REPO_NAME, mlflow=True)
 
         # mlflow.set_tracking_uri("sqlite:///mlflow.db")
         mlflow.set_experiment("House_Price_Prediction")

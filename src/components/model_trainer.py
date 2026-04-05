@@ -11,8 +11,7 @@ import mlflow
 import joblib,json
 from pathlib import Path
 import numpy as np
-from src.constants import DAGSHUB_URI,MLFLOW_TRACKING_PASSWORD,MLFLOW_TRACKING_USERNAME
-
+from src.constants import *
 class ModelTrainer:
 
 
@@ -111,10 +110,10 @@ if __name__ == "__main__":
         config = ConfigurationManager()
         model_training_config = config.get_model_trainer()
 
-        mlflow.set_tracking_uri(DAGSHUB_URI)
-        dagshub.init(repo_owner='ronaksah75', repo_name='mlops-project', mlflow=True)
         os.environ['MLFLOW_TRACKING_USERNAME']=MLFLOW_TRACKING_USERNAME
         os.environ['MLFLOW_TRACKING_PASSWORD']=MLFLOW_TRACKING_PASSWORD
+        mlflow.set_tracking_uri(DAGSHUB_URI)
+        # dagshub.init(repo_owner=REPO_OWNER, repo_name=REPO_NAME, mlflow=True)
 
         mlflow_path=Path("artifacts/runs")
 

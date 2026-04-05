@@ -47,3 +47,6 @@ GitPython==3.1.46
 
 # --- Testing (Fixes your CI error) ---
 pytest==9.0.2
+
+dagshub
+-e .

@@ -17,3 +17,7 @@ SCHEMA_FILE_PATH = Path("config/schema.yaml")
 DAGSHUB_URI=os.getenv("dagshub_uri")
 MLFLOW_TRACKING_USERNAME=os.getenv("mlflow_tracking_username")
 MLFLOW_TRACKING_PASSWORD=os.getenv("mlflow_tracking_password")
+
+REPO_OWNER="ronaksah75"
+REPO_NAME="mlops-project"
+

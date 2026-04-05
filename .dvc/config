@@ -1,4 +1,6 @@
 [core]
-    remote = local_bucket
-['remote "local_bucket"']
-    url = D:\Ml Dl\Project\mlops-project\dvc_storage
+    remote = myremote
+['remote "origin"']
+    url = https://dagshub.com/ronaksah75/mlops-project.dvc
+['remote "myremote"']
+    url = https://dagshub.com/ronaksah75/mlops-project.dvc
