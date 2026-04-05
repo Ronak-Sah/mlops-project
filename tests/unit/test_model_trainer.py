@@ -15,7 +15,7 @@ class TestModelTrainer:
 
         assert trainer.trained_model_path==os.path.join('artifacts','model_trainer','model.pkl')
         assert trainer.metric_path==os.path.join('artifacts','model_trainer','metrics.json')
-        assert trainer.experiment_info_path==os.path.join('artifacts','model_trainer','experiment_info.json')
+        assert trainer.experiment_info_path==os.path.join('artifacts','model_trainer','experiment.json')
 
     def test_initiate_model_trainer(self,setup_trainer):
         trainer=setup_trainer.initiate_model_trainer()
